@@ -1,0 +1,113 @@
+<html>
+<head>
+	<title>Good Word</title>
+	<style>
+		#header { position:absolute; top:0;left:0;right:0;height:95px; }
+		#main { position:absolute; top:100px;left:0;right:0;bottom:0;width:auto;height:auto; background-color:white;}
+		#slidecontainer { position:absolute; top:0; left:0; height:100%; width:10000px; }
+		.slide { height:100%; width:100%; float:left; }
+	</style>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+</head>
+<body>
+
+<div id="header">
+<table style="width:100%;background-color:grey;">
+	<tr>
+		<td><img src="images/BREAD_Icon.png">Food</td>
+		<td><img src="images/Shelter_Icon.png">Shelter</td>
+		<td><img src="images/Job_Icon.png">Jobs</td>
+		<td><img src="images/Services_Icon.png">Services</td>
+	</tr>
+</table>
+</div>
+<div id="main">
+	<div id="slidecontainer">
+		<div class="slide">
+			Test slide 1
+		</div>
+		<div class="slide">
+			Test slide 2
+		</div>
+	</div>
+</div>
+
+
+
+<div pub-key="pub-d571d1e4-d81b-461a-ad93-daec94794adc" sub-key="sub-34aff5eb-f043-11e0-b4ac-ff1b833cf61a" ssl="off" origin="pubsub.pubnub.com" id="pubnub"></div>
+<script src="http://cdn.pubnub.com/pubnub-3.1.min.js"></script>
+<script>
+var curSlide=0;
+var screenWidth=$("#main").width();
+var contentJSON = {};
+$(".slide").css('width', screenWidth);
+var timer = setInterval(function() {
+	curSlide++;
+	if (curSlide >= $(".slide").length) {
+		curSlide=0;
+	}
+	$("#slidecontainer").animate(
+		//properties to change
+		{left:-curSlide*screenWidth}, 
+		//durration
+		1000, 
+		//on complete
+		function() {
+			//clearInterval(timer);
+		}
+	);
+}, 3000);
+</script>
+<script>
+function updateContent(message) {
+	contentJSON = message;
+	$(".slide").remove();
+	for (i in message) {
+		slide = $("<div class='slide'></div>");
+		slide.html(message[i].html);
+		slide.addClass(message[i].category);
+		$("#slidecontainer").append(slide);
+	}
+	$(".slide").css('width', screenWidth);
+	$("#slidecontainer").css('left', 0);
+}
+</script>
+<script>(function(){
+ 
+    // LISTEN FOR MESSAGES
+    PUBNUB.subscribe({
+        channel    : "goodword",      // CONNECT TO THIS CHANNEL.
+ 
+        restore    : false,              // STAY CONNECTED, EVEN WHEN BROWSER IS CLOSED
+                                         // OR WHEN PAGE CHANGES.
+ 
+        callback   : function(message) { // RECEIVED A MESSAGE.
+            //alert(message)
+            console.log(message);
+            updateContent(message);
+        },
+ 
+        disconnect : function() {        // LOST CONNECTION.
+            // alert(
+            //     "Connection Lost." +
+            //     "Will auto-reconnect when Online."
+            // )
+        },
+ 
+        reconnect  : function() {        // CONNECTION RESTORED.
+            //alert("And we're Back!")
+        },
+ 
+        connect    : function() {        // CONNECTION ESTABLISHED.
+ 			console.log("Connected");
+            // PUBNUB.publish({             // SEND A MESSAGE.
+            //     channel : "hello_world",
+            //     message : "Hi from PubNub."
+            // });
+ 
+        }
+    })
+ 
+})();</script>
+</body>
+</html>

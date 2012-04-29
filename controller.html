@@ -1,0 +1,37 @@
+<html>
+<head>
+	<title>Good Word Controller</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+</head>
+<body>
+
+<h3>Slide 1</h3>
+<textarea></textarea>
+
+<h3>Slide 2</h3>
+<textarea></textarea>
+
+
+<h3>Slide 3</h3>
+<textarea></textarea>
+<br />
+<button>Submit</button>
+
+
+<script>
+$("button").click(function() {
+	json = {};
+	$("textarea").each(function(i, el) {
+		json[""+i] = {html:$(el).val(), category:'food'};
+	});
+	console.log(json);
+	PUBNUB.publish({channel:'goodword', message:json});
+});
+</script>
+
+
+<div pub-key="pub-d571d1e4-d81b-461a-ad93-daec94794adc" sub-key="sub-34aff5eb-f043-11e0-b4ac-ff1b833cf61a" ssl="off" origin="pubsub.pubnub.com" id="pubnub"></div>
+<script src="http://cdn.pubnub.com/pubnub-3.1.min.js"></script>
+
+</body>
+</html>
