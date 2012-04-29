@@ -15,6 +15,7 @@
 <h3>Slide 3</h3>
 <textarea></textarea>
 <br />
+
 <button>Submit</button>
 
 
@@ -22,7 +23,10 @@
 $("button").click(function() {
 	json = {};
 	$("textarea").each(function(i, el) {
-		json[""+i] = {html:$(el).val(), category:'food'};
+		json[""+i] = {
+			html: $(el).val(), 
+			category:'food'
+		};
 	});
 	console.log(json);
 	PUBNUB.publish({channel:'goodword', message:json});
